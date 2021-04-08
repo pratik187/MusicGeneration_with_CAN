@@ -61,12 +61,6 @@ class Discriminator(nn.Module):
             nn.Linear(524288,1),
             nn.Sigmoid()
             
-            
-            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # implement the structure of discriminator here. The input size is batch x 1 x 32 x 32.
-            # Output size should be batch x 1 x 1 x 1 or batch x 1.
-            # You can use a structure similar to the reverse of the generator.
-            # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         )
 
     def forward(self, img):
