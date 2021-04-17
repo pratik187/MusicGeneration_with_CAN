@@ -18,14 +18,14 @@ def train_DCGAN(G, D, optim_G, optim_D, loss_f, train_loader, num_epochs, device
             # ========================
             # train with real data
             img = img.to(device)
-            real_score = D(img)
-            d_loss_real = loss_f(real_score, real_label)
+            real_score = D(img.float())
+            d_loss_real = loss_f(real_score.flatten(), real_label)
 
             # train with fake data
             noise = torch.randn(batch_size, 100, device=device)
             img_fake = G(noise)
             fake_score = D(img_fake)
-            d_loss_fake = loss_f(fake_score, fake_label)
+            d_loss_fake = loss_f(fake_score.flatten(), fake_label)
 
             # update D
             d_loss = d_loss_real + d_loss_fake
@@ -39,7 +39,7 @@ def train_DCGAN(G, D, optim_G, optim_D, loss_f, train_loader, num_epochs, device
             noise = torch.randn(batch_size, 100, device=device)
             img_fake = G(noise)
             g_score = D(img_fake)
-            g_loss = loss_f(g_score, real_label)
+            g_loss = loss_f(g_score.flatten(), real_label)
 
             # update G
             G.zero_grad()
@@ -51,7 +51,7 @@ def train_DCGAN(G, D, optim_G, optim_D, loss_f, train_loader, num_epochs, device
                       % (epoch, num_epochs, i, len(train_loader), d_loss.item(), g_loss.item(),
                          real_score.mean().item(), fake_score.mean().item(), g_score.mean().item()))
 
-        noise = torch.randn(24, 100, device=device)
+        noise = torch.randn(2, 100, device=device)
         img_fake = G(noise)
         grid = make_grid(img_fake)
         plt.imshow(grid.permute(1, 2, 0).detach().cpu().numpy())
