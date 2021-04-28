@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import torch
 from torchvision.utils import make_grid
-
+import numpy as np
 
 def train_DCGAN(G, D, optim_G, optim_D, loss_f1, loss_f2, train_loader, num_epochs, label2onehot, 
             CrossEntropy_uniform, n_class, device):
@@ -10,9 +10,8 @@ def train_DCGAN(G, D, optim_G, optim_D, loss_f1, loss_f2, train_loader, num_epoc
 
         for i, (img,labels) in enumerate(train_loader):
             batch_size = img.shape[0]
-            
             labels = label2onehot(labels)
-            labels = labels.long()
+            #labels = labels.long()
             
             real_label = torch.ones(batch_size, device=device)
             fake_label = torch.zeros(batch_size, device=device)
@@ -28,11 +27,14 @@ def train_DCGAN(G, D, optim_G, optim_D, loss_f1, loss_f2, train_loader, num_epoc
             # train with fake data
             noise = torch.randn(batch_size, 100, device=device)
             img_fake = G(noise)
+            print('fake image shape=')
+            print(img_fake.shape)
             fake_r_score, fake_c_score = D(img_fake)
             
 
-            # update D
-            d_loss = loss_f1(real_r_score, real_label) + loss_f2(real_c_score, labels)
+            # update D      
+            print(np.resize(labels,(labels.length())).shape)
+            d_loss = loss_f1(real_r_score.flatten(), real_label) + loss_f2(real_c_score.flatten(), labels)
             d_loss = d_loss + loss_f1(fake_r_score, fake_label)
             D.zero_grad()
             d_loss.backward()

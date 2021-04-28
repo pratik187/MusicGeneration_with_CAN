@@ -16,19 +16,19 @@ class Generator(nn.Module):
             nn.BatchNorm2d(512),
             nn.ReLU(),
             # state size. 256 x 8 x 8
-            nn.ConvTranspose2d(512, 256, 4, 2, 1, bias=False),
+            nn.ConvTranspose2d(512, 256, 2, 2, 1, bias=False),
             nn.BatchNorm2d(256),
             nn.ReLU(),
             # size 128 x 16 x 16
-            nn.ConvTranspose2d(256, 128, 4, 2, 1, bias=False),
+            nn.ConvTranspose2d(256, 128, 2, 2, 1, bias=False),
             nn.BatchNorm2d(128),
             nn.ReLU(),
             #  size 128 x 32 x 32
-            nn.ConvTranspose2d(128, 64, 4, 2, 1, bias=False),
+            nn.ConvTranspose2d(128, 64, 2, 2, 1, bias=False),
             nn.BatchNorm2d(64),
             nn.ReLU(),
             #  size 64 x 64 x 64
-            nn.ConvTranspose2d(64, 1, 4, 2, 1, bias=False),
+            nn.ConvTranspose2d(64, 1, 1, 2, 0, bias=False),
             nn.Tanh()
             #  output size 1 x 128 x 128
         )
@@ -63,19 +63,21 @@ class Discriminator(nn.Module):
         )
         # Linear layer for determining real/fake
         self.disc = nn.Sequential(
-            nn.Linear(524288,1),
+            nn.Linear(294912,1),
             nn.Sigmoid())
 
         # Linear layers for classify the image
         self.classify = nn.Sequential(
-            nn.Linear(524288,512),
+            nn.Linear(294912,512),
             nn.LeakyReLU(),
             nn.Linear(512, 1)
             # nn.Softmax(dim=1))
             )
 
     def forward(self, img):
+        #print(img.shape)
         x = self.net(img)
+        print(x.shape)
         r_out = self.disc(x)
         c_out = self.classify(x)
         return r_out, c_out
