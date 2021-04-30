@@ -55,7 +55,6 @@ class Discriminator(nn.Module):
             nn.Conv2d(256, 512, 4, 2, 1, bias=False) ,
             nn.BatchNorm2d(512),
             nn.LeakyReLU(),
-            nn.Dropout(0.3),
             nn.Flatten()
             # input size batch x 524288 
             
