@@ -29,7 +29,7 @@ class Generator(nn.Module):
             nn.ReLU(),
             #  size 64 x 64 x 64
             nn.ConvTranspose2d(64, 1, 1, 2, 0, bias=False),
-            nn.Tanh()
+            nn.Sigmoid()
             #  output size 1 x 128 x 128
         )
 
@@ -70,14 +70,14 @@ class Discriminator(nn.Module):
         self.classify = nn.Sequential(
             nn.Linear(294912,512),
             nn.LeakyReLU(),
-            nn.Linear(512, 1)
+            nn.Linear(512, 19)
             # nn.Softmax(dim=1))
             )
 
     def forward(self, img):
         #print(img.shape)
         x = self.net(img)
-        print(x.shape)
+        #print(x.shape)
         r_out = self.disc(x)
         c_out = self.classify(x)
         return r_out, c_out
